@@ -1,0 +1,46 @@
+﻿{
+    "schemaVersion":  1,
+    "id":  "better-meat",
+    "name":  "Stranded Deep Better Meat",
+    "version":  "0.3.1",
+    "artifactBaseName":  "BetterMeat",
+    "type":  "mod",
+    "category":  "gameplay",
+    "description":  "Improves meat stacking, cooking and cooking status display.",
+    "packagePaths":  [
+                         "BepInEx/plugins/BetterMeat"
+                     ],
+    "ownedPaths":  [
+                       "BepInEx/plugins/BetterMeat"
+                   ],
+    "install":  {
+                    "restartRequired":  true
+                },
+    "dependencies":  [
+                         {
+                             "id":  "bepinex",
+                             "required":  true
+                         }
+                     ],
+    "optionalDependencies":  [
+                                 {
+                                     "id":  "mod-settings",
+                                     "minimumVersion":  "0.2.0"
+                                 }
+                             ],
+    "conflicts":  [
+
+                  ],
+    "persistence":  {
+                        "usesBepInExConfig":  true,
+                        "usesGameSave":  false,
+                        "usesSidecarData":  false,
+                        "backupBeforeUpdate":  false
+                    },
+    "publishing":  {
+                       "repository":  "stranded-deep-better-meat",
+                       "tag":  "v0.3.1",
+                       "releaseChannel":  "stable"
+                   },
+    "bepInExGuid":  "bamex.strandeddeep.bettermeat"
+}

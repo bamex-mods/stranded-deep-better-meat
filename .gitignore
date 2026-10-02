@@ -1,0 +1,17 @@
+# Build output
+/build/
+
+# Generated release artifacts
+/dist/out/
+
+# Common .NET / IDE output
+/bin/
+/obj/
+.vs/
+*.user
+*.suo
+
+# Temporary/editor files
+*.tmp
+*.bak
+*~
