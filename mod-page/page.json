@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "better-meat",
+  "defaultLocale": "en",
+  "locales": {
+    "en": "en.json",
+    "ru": "ru.json"
+  },
+  "media": {
+    "cover": "media/cover.jpg",
+    "screenshots": []
+  },
+  "tags": [
+    "food",
+    "cooking",
+    "inventory",
+    "stacking",
+    "split_screen",
+    "quality_of_life"
+  ],
+  "highlights": [
+    "food",
+    "cooking",
+    "stacking",
+    "cooking_status"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "subtitle": "Safer meat stacks with clear cooking and smoking timers.",
+  "description": "Improves meat handling by separating stacks by state, blocking raw and spoiled meat consumption, and adding clear cooking and smoking countdowns.",
+  "features": [
+    "Raw, cooked, smoked and spoiled meat are kept out of newly mixed stacks.",
+    "The mod does not change the vanilla stack size; capacity still comes from the game or another storage mod.",
+    "Raw and spoiled meat consumption is blocked while cooked and smoked meat remains usable.",
+    "A HUD countdown shows the remaining cooking time.",
+    "Smoking has its own countdown because cooking and smoking progress in parallel.",
+    "Cooking and smoking progress is shown visually.",
+    "The HUD supports local split-screen and can present status to both players.",
+    "Existing mixed stacks are not force-migrated; the mod prevents new invalid combinations instead."
+  ],
+  "screenshotCaptions": {},
+  "faq": [
+    {
+      "question": "Does Better Meat change meat stack size?",
+      "answer": "No. It only checks whether meat states are compatible with a stack."
+    },
+    {
+      "question": "Why are there separate cooking and smoking timers?",
+      "answer": "Stranded Deep advances cooking and smoking in parallel, so the two completion times are different."
+    },
+    {
+      "question": "Does the HUD support local split-screen?",
+      "answer": "Yes. It is designed for two players on the same PC and uses the appropriate player UI."
+    },
+    {
+      "question": "What happens to old mixed stacks?",
+      "answer": "They are not aggressively migrated. The mod leaves them in place and prevents new incompatible additions."
+    },
+    {
+      "question": "Does the mod save a separate meat state?",
+      "answer": "No. Meat state is derived from the game's own Cooking, Smoking and Spoiled data."
+    }
+  ],
+  "changelog": []
+}
