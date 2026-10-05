@@ -1,14 +1,19 @@
 ﻿param(
-    [string]$GameDir = "F:\SteamLibrary\steamapps\common\Stranded Deep",
+    [Alias("GameRoot")]
+    [string]$GameDir = $env:STRANDED_DEEP_GAME_ROOT,
     [switch]$Deploy
 )
 
 $ErrorActionPreference = "Stop"
 
+if ([string]::IsNullOrWhiteSpace($GameDir)) {
+    throw "GameRoot was not supplied. Pass -GameRoot (or -GameDir) or set STRANDED_DEEP_GAME_ROOT."
+}
+
 $ProjectDir = $PSScriptRoot
 $SourceFiles = @(
     (Join-Path $ProjectDir "BetterMeat.cs"),
-    (Join-Path $ProjectDir "ModSettingsClient.cs")
+    (Join-Path $ProjectDir "SDK\ModSettingsClient.cs")
 )
 $BuildDir = Join-Path $ProjectDir "build"
 $OutputDll = Join-Path $BuildDir "BetterMeat.dll"
@@ -66,7 +71,7 @@ foreach ($SourceFile in $SourceFiles) {
 Write-Host "Game: $GameDir"
 Write-Host "Compiler: $Csc"
 Write-Host "Unity references: $($UnityRefs.Count)"
-Write-Host "Building Better Meat v0.3.1..."
+Write-Host "Building Better Meat v0.3.2..."
 
 & $Csc $Args
 
@@ -89,7 +94,7 @@ if ($Deploy) {
 }
 
 Write-Host ""
-Write-Host "Better Meat v0.3.1:"
+Write-Host "Better Meat v0.3.2:"
 Write-Host "  - bottom-anchored HUD"
 Write-Host "  - one soft-edge background"
 Write-Host "  - strict crosshair-to-station targeting (no subtree search)"

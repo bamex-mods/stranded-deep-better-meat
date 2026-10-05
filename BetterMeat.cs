@@ -14,7 +14,7 @@ using Bamex.StrandedDeep.ModSettings;
 
 namespace BamEx.StrandedDeep.BetterMeat
 {
-    [BepInPlugin("bamex.strandeddeep.bettermeat", "Better Meat", "0.3.1")]
+    [BepInPlugin("bamex.strandeddeep.bettermeat", "Better Meat", "0.3.2")]
     [BepInDependency(
         "com.bamex.strandeddeep.modsettings",
         BepInDependency.DependencyFlags.SoftDependency)]
@@ -135,7 +135,7 @@ namespace BamEx.StrandedDeep.BetterMeat
             MeatStackPatch.Install(_harmony);
             SafeEatingPatch.Install(_harmony);
 
-            Logger.LogInfo("Better Meat v0.3.1 loaded.");
+            Logger.LogInfo("Better Meat v0.3.2 loaded.");
             Logger.LogInfo("Stacks: " + SeparateStacks.Value);
             Logger.LogInfo("Block raw: " + BlockRawMeat.Value);
             Logger.LogInfo("Block spoiled: " + BlockSpoiledMeat.Value);
@@ -146,8 +146,9 @@ namespace BamEx.StrandedDeep.BetterMeat
 
         private void RegisterModSettings()
         {
-            bool registered = ModSettingsClient.RegisterMod(
+            bool registered = ModSettingsClient.RegisterModLocalized(
                 "bettermeat",
+                "BETTER MEAT",
                 "BETTER MEAT",
                 300);
 
@@ -158,13 +159,16 @@ namespace BamEx.StrandedDeep.BetterMeat
                 return;
             }
 
-            ModSettingsClient.AddToggle(
+            ModSettingsClient.AddToggleLocalized(
                 "bettermeat",
                 "cooking_hud",
                 "Таймер приготовления",
+                "Cooking Timer",
                 100,
                 "Вкл.",
+                "On",
                 "Выкл.",
+                "Off",
                 delegate
                 {
                     return CookingHud.Value;
@@ -177,15 +181,17 @@ namespace BamEx.StrandedDeep.BetterMeat
                         ClearHud();
                 });
 
-            ModSettingsClient.AddSlider(
+            ModSettingsClient.AddSliderLocalized(
                 "bettermeat",
                 "hud_scale",
                 "Размер таймера",
+                "Timer Size",
                 110,
                 0.75f,
                 1.75f,
                 0.05f,
                 100.0f,
+                "%",
                 "%",
                 0,
                 delegate
@@ -200,16 +206,23 @@ namespace BamEx.StrandedDeep.BetterMeat
                     _styleScale = -1.0f;
                 });
 
-            ModSettingsClient.AddChoice(
+            ModSettingsClient.AddChoiceLocalized(
                 "bettermeat",
                 "hud_position",
                 "Положение таймера",
+                "Timer Position",
                 120,
                 new string[]
                 {
                     "Низко",
                     "Средне",
                     "Высоко"
+                },
+                new string[]
+                {
+                    "Bottom",
+                    "Middle",
+                    "Top"
                 },
                 delegate
                 {
@@ -220,13 +233,16 @@ namespace BamEx.StrandedDeep.BetterMeat
                     SetHudPositionChoice(index);
                 });
 
-            ModSettingsClient.AddToggle(
+            ModSettingsClient.AddToggleLocalized(
                 "bettermeat",
                 "block_raw",
                 "Запретить сырое мясо",
+                "Prevent Eating Raw Meat",
                 200,
                 "Вкл.",
+                "On",
                 "Выкл.",
+                "Off",
                 delegate
                 {
                     return BlockRawMeat.Value;
@@ -236,13 +252,16 @@ namespace BamEx.StrandedDeep.BetterMeat
                     BlockRawMeat.Value = value;
                 });
 
-            ModSettingsClient.AddToggle(
+            ModSettingsClient.AddToggleLocalized(
                 "bettermeat",
                 "block_spoiled",
                 "Запретить протухшее мясо",
+                "Prevent Eating Spoiled Meat",
                 210,
                 "Вкл.",
+                "On",
                 "Выкл.",
+                "Off",
                 delegate
                 {
                     return BlockSpoiledMeat.Value;
@@ -252,13 +271,16 @@ namespace BamEx.StrandedDeep.BetterMeat
                     BlockSpoiledMeat.Value = value;
                 });
 
-            ModSettingsClient.AddToggle(
+            ModSettingsClient.AddToggleLocalized(
                 "bettermeat",
                 "separate_stacks",
                 "Разделять мясо по состоянию",
+                "Separate Meat by State",
                 300,
                 "Вкл.",
+                "On",
                 "Выкл.",
+                "Off",
                 delegate
                 {
                     return SeparateStacks.Value;

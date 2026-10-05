@@ -1,4 +1,4 @@
-# Better Meat v0.3.1 — Mod Settings (exact SDK)
+# Better Meat v0.3.2 — RU/EN Mod Settings
 
 База: стабильный Better Meat v0.2.9.
 
@@ -93,6 +93,13 @@ Better Meat остаётся владельцем `ConfigEntry`.
 10. После restart значения сохраняются через BepInEx config.
 11. Better Meat продолжает работать без host-мода настроек.
 
+
+## v0.3.2
+
+- Добавлена русско-английская локализация шести настроек в `Settings -> MODS`.
+- Vendored bridge синхронизирован с authoritative bilingual `SDK\ModSettingsClient.cs`.
+- Gameplay, ConfigEntry, сохранение настроек и split-screen поведение не менялись.
+- Русская/английская регистрация Mod Settings и игровое поведение проверены вручную перед публикацией.
 
 ## v0.3.1
 
