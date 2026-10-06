@@ -71,7 +71,7 @@ foreach ($SourceFile in $SourceFiles) {
 Write-Host "Game: $GameDir"
 Write-Host "Compiler: $Csc"
 Write-Host "Unity references: $($UnityRefs.Count)"
-Write-Host "Building Better Meat v0.3.2..."
+Write-Host "Building Better Meat v0.3.3..."
 
 & $Csc $Args
 
@@ -94,7 +94,7 @@ if ($Deploy) {
 }
 
 Write-Host ""
-Write-Host "Better Meat v0.3.2:"
+Write-Host "Better Meat v0.3.3:"
 Write-Host "  - bottom-anchored HUD"
 Write-Host "  - one soft-edge background"
 Write-Host "  - strict crosshair-to-station targeting (no subtree search)"

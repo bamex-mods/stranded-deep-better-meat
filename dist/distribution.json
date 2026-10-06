@@ -2,7 +2,7 @@
     "schemaVersion":  1,
     "id":  "better-meat",
     "name":  "Stranded Deep Better Meat",
-    "version":  "0.3.2",
+    "version":  "0.3.3",
     "artifactBaseName":  "BetterMeat",
     "type":  "mod",
     "category":  "gameplay",
@@ -39,7 +39,7 @@
                     },
     "publishing":  {
                        "repository":  "stranded-deep-better-meat",
-                       "tag":  "v0.3.2",
+                       "tag":  "v0.3.3",
                        "releaseChannel":  "stable"
                    },
     "bepInExGuid":  "bamex.strandeddeep.bettermeat"

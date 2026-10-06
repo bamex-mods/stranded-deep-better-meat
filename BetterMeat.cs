@@ -14,7 +14,7 @@ using Bamex.StrandedDeep.ModSettings;
 
 namespace BamEx.StrandedDeep.BetterMeat
 {
-    [BepInPlugin("bamex.strandeddeep.bettermeat", "Better Meat", "0.3.2")]
+    [BepInPlugin("bamex.strandeddeep.bettermeat", "Better Meat", "0.3.3")]
     [BepInDependency(
         "com.bamex.strandeddeep.modsettings",
         BepInDependency.DependencyFlags.SoftDependency)]
@@ -135,7 +135,7 @@ namespace BamEx.StrandedDeep.BetterMeat
             MeatStackPatch.Install(_harmony);
             SafeEatingPatch.Install(_harmony);
 
-            Logger.LogInfo("Better Meat v0.3.2 loaded.");
+            Logger.LogInfo("Better Meat v0.3.3 loaded.");
             Logger.LogInfo("Stacks: " + SeparateStacks.Value);
             Logger.LogInfo("Block raw: " + BlockRawMeat.Value);
             Logger.LogInfo("Block spoiled: " + BlockSpoiledMeat.Value);
@@ -373,6 +373,11 @@ namespace BamEx.StrandedDeep.BetterMeat
             {
                 DrawPlayerHud(_hud[i]);
             }
+        }
+
+        internal void InfoLog(string message)
+        {
+            Logger.LogInfo(message);
         }
 
         internal void DebugLog(string message)
@@ -647,7 +652,9 @@ namespace BamEx.StrandedDeep.BetterMeat
 
             DrawShadowedLabel(
                 new Rect(x + pad, y + (7.0f * scale), panelWidth - (pad * 2.0f), titleHeight),
-                smoker ? "КОПТИЛЬНЯ" : "КОСТЁР",
+                smoker
+                    ? BetterMeatRuntimeText.SmokerTitle
+                    : BetterMeatRuntimeText.CampfireTitle,
                 _titleStyle);
 
             float cursorY = y + (34.0f * scale);
@@ -718,20 +725,7 @@ namespace BamEx.StrandedDeep.BetterMeat
 
         private string GetPiecesLabel(int count)
         {
-            int lastTwo = count % 100;
-            int last = count % 10;
-            string word;
-
-            if (lastTwo >= 11 && lastTwo <= 14)
-                word = "кусков";
-            else if (last == 1)
-                word = "кусок";
-            else if (last >= 2 && last <= 4)
-                word = "куска";
-            else
-                word = "кусков";
-
-            return count.ToString(CultureInfo.InvariantCulture) + " " + word + " мяса";
+            return BetterMeatRuntimeText.GetPiecesLabel(count);
         }
 
         private CookingView GetLastCookingView(List<CookingView> views)
@@ -813,12 +807,14 @@ namespace BamEx.StrandedDeep.BetterMeat
 
             if (allCooked || last == null)
             {
-                label = "Все готовы";
+                label = BetterMeatRuntimeText.AllCooked;
                 progress = 1.0f;
             }
             else
             {
-                label = "Все готовы через " + FormatRemaining(last.CookingHours);
+                label =
+                    BetterMeatRuntimeText.AllCookedIn +
+                    FormatRemaining(last.CookingHours);
                 progress = last.CookingProgress;
             }
 
@@ -845,12 +841,14 @@ namespace BamEx.StrandedDeep.BetterMeat
 
             if (allSmoked || last == null)
             {
-                label = "Все копчёные";
+                label = BetterMeatRuntimeText.AllSmoked;
                 progress = 1.0f;
             }
             else
             {
-                label = "Все копчёные через " + FormatRemaining(last.SmokingHours);
+                label =
+                    BetterMeatRuntimeText.AllSmokedIn +
+                    FormatRemaining(last.SmokingHours);
                 progress = last.SmokingProgress;
             }
 
@@ -874,11 +872,15 @@ namespace BamEx.StrandedDeep.BetterMeat
             string label;
 
             if (view.Cooked)
-                label = "Готово";
+                label = BetterMeatRuntimeText.Cooked;
             else if (view.CookingActive)
-                label = "Готово через " + FormatRemaining(view.CookingHours);
+                label =
+                    BetterMeatRuntimeText.CookedIn +
+                    FormatRemaining(view.CookingHours);
             else
-                label = "Готовка остановлена — " + FormatRemaining(view.CookingHours);
+                label =
+                    BetterMeatRuntimeText.CookingStopped +
+                    FormatRemaining(view.CookingHours);
 
             DrawShadowedLabel(
                 new Rect(x, y, width, 20.0f * GetHudScale()),
@@ -900,11 +902,15 @@ namespace BamEx.StrandedDeep.BetterMeat
             string label;
 
             if (view.Smoked)
-                label = "Копчёное";
+                label = BetterMeatRuntimeText.Smoked;
             else if (view.SmokingActive)
-                label = "Копчёное через " + FormatRemaining(view.SmokingHours);
+                label =
+                    BetterMeatRuntimeText.SmokedIn +
+                    FormatRemaining(view.SmokingHours);
             else
-                label = "Копчение остановлено — " + FormatRemaining(view.SmokingHours);
+                label =
+                    BetterMeatRuntimeText.SmokingStopped +
+                    FormatRemaining(view.SmokingHours);
 
             DrawShadowedLabel(
                 new Rect(x, y, width, 20.0f * GetHudScale()),
@@ -1929,42 +1935,625 @@ namespace BamEx.StrandedDeep.BetterMeat
             InteractiveObject_FOOD food)
         {
             if (food == null)
-                return "Мясо";
+                return BetterMeatRuntimeText.Meat;
 
             string type =
                 food.CraftingType.ToString();
 
-            string name = "Мясо";
+            string name = BetterMeatRuntimeText.Meat;
 
             if (type.IndexOf(
                     "ATTRIBUTE_TYPE_SMALL",
                     StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                name = "Малое мясо";
+                name = BetterMeatRuntimeText.SmallMeat;
             }
             else if (type.IndexOf(
                          "ATTRIBUTE_TYPE_MEDIUM",
                          StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                name = "Среднее мясо";
+                name = BetterMeatRuntimeText.MediumMeat;
             }
             else if (type.IndexOf(
                          "ATTRIBUTE_TYPE_LARGE",
                          StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                name = "Большое мясо";
+                name = BetterMeatRuntimeText.LargeMeat;
             }
 
             if (food.Spoiled)
-                return "Тухлое " + name.ToLowerInvariant();
+                return BetterMeatRuntimeText.GetSpoiledName(name);
 
             return name;
         }
     }
 
+    internal static class BetterMeatRuntimeText
+    {
+        private const float LocaleCacheSeconds = 3.0f;
+
+        private static bool _cacheValid;
+        private static bool _cachedRussian;
+        private static float _nextResolveTime;
+        private static bool _firstProbe = true;
+        private static string _lastProbeSignature;
+        private static Transform _generalButtonTransform;
+
+        internal static bool IsRussian()
+        {
+            float now = Time.realtimeSinceStartup;
+
+            if (_cacheValid && now < _nextResolveTime)
+                return _cachedRussian;
+
+            ResolveLocale(now);
+            return _cachedRussian;
+        }
+
+        private static void ResolveLocale(float now)
+        {
+            string handlerType = "unavailable";
+            string beamLanguage = "unavailable";
+            string currentLanguage = "unavailable";
+            string assetPath = "unavailable";
+            string nativeGeneral = "unavailable";
+            string error = "";
+
+            try
+            {
+                object handler =
+                    Beam.Language.Localization.GetLanguageHandler();
+
+                if (handler != null)
+                {
+                    handlerType =
+                        handler.GetType().FullName ??
+                        handler.GetType().Name;
+
+                    object beamValue =
+                        InvokeNoArg(
+                            handler,
+                            "GetCurrentLanguage");
+
+                    if (beamValue != null)
+                    {
+                        beamLanguage =
+                            Convert.ToString(
+                                beamValue,
+                                CultureInfo.InvariantCulture);
+                    }
+
+                    object currentValue =
+                        ReadMember(
+                            handler,
+                            "currentLanguage");
+
+                    if (currentValue != null)
+                    {
+                        currentLanguage =
+                            Convert.ToString(
+                                currentValue,
+                                CultureInfo.InvariantCulture);
+                    }
+
+                    object assetValue =
+                        ReadMember(
+                            handler,
+                            "_currentAssetPath");
+
+                    if (assetValue != null)
+                    {
+                        assetPath =
+                            Convert.ToString(
+                                assetValue,
+                                CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.GetType().Name;
+            }
+
+            bool russian = false;
+            string source = "English fallback";
+
+            // GetCurrentLanguage/currentLanguage are diagnostic only: the
+            // game can leave both on Russian after loading English assets.
+            if (
+                !String.IsNullOrEmpty(assetPath) &&
+                !String.Equals(
+                    assetPath,
+                    "unavailable",
+                    StringComparison.Ordinal)
+            )
+            {
+                russian =
+                    IsRussianAssetPath(assetPath);
+
+                source = "_currentAssetPath";
+                nativeGeneral = "not queried";
+            }
+            else
+            {
+                bool nativeRussian;
+                bool nativeResolved =
+                    TryGetNativeOptionsLocale(
+                        out nativeRussian,
+                        out nativeGeneral);
+
+                if (nativeResolved)
+                {
+                    russian = nativeRussian;
+                    source = "native Options UI";
+                }
+            }
+
+            _cachedRussian = russian;
+            _cacheValid = true;
+            _nextResolveTime = now + LocaleCacheSeconds;
+
+            string locale = russian ? "RU" : "EN";
+            string signature =
+                handlerType + "|" +
+                beamLanguage + "|" +
+                currentLanguage + "|" +
+                assetPath + "|" +
+                nativeGeneral + "|" +
+                locale + "|" +
+                source + "|" +
+                error;
+
+            if (
+                _firstProbe ||
+                !String.Equals(
+                    signature,
+                    _lastProbeSignature,
+                    StringComparison.Ordinal)
+            )
+            {
+                LogProbe(
+                    now,
+                    handlerType,
+                    beamLanguage,
+                    currentLanguage,
+                    assetPath,
+                    nativeGeneral,
+                    locale,
+                    source,
+                    error);
+
+                _firstProbe = false;
+                _lastProbeSignature = signature;
+            }
+        }
+
+        private static object InvokeNoArg(
+            object instance,
+            string methodName)
+        {
+            if (instance == null)
+                return null;
+
+            try
+            {
+                MethodInfo method =
+                    instance.GetType().GetMethod(
+                        methodName,
+                        BindingFlags.Instance |
+                        BindingFlags.Public |
+                        BindingFlags.NonPublic);
+
+                return method != null
+                    ? method.Invoke(instance, null)
+                    : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static object ReadMember(
+            object instance,
+            string memberName)
+        {
+            if (instance == null)
+                return null;
+
+            Type type = instance.GetType();
+
+            while (type != null)
+            {
+                try
+                {
+                    FieldInfo field =
+                        type.GetField(
+                            memberName,
+                            BindingFlags.Instance |
+                            BindingFlags.Public |
+                            BindingFlags.NonPublic |
+                            BindingFlags.DeclaredOnly);
+
+                    if (field != null)
+                        return field.GetValue(instance);
+
+                    PropertyInfo property =
+                        type.GetProperty(
+                            memberName,
+                            BindingFlags.Instance |
+                            BindingFlags.Public |
+                            BindingFlags.NonPublic |
+                            BindingFlags.DeclaredOnly);
+
+                    if (
+                        property != null &&
+                        property.GetIndexParameters().Length == 0
+                    )
+                    {
+                        return property.GetValue(instance, null);
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+
+                type = type.BaseType;
+            }
+
+            return null;
+        }
+
+        private static bool IsRussianAssetPath(
+            string assetPath)
+        {
+            if (String.IsNullOrEmpty(assetPath))
+                return false;
+
+            string normalized =
+                assetPath.Replace('\\', '/').Trim();
+
+            int slash = normalized.LastIndexOf('/');
+            string leaf =
+                slash >= 0
+                ? normalized.Substring(slash + 1)
+                : normalized;
+
+            return
+                leaf.Equals(
+                    "ru",
+                    StringComparison.OrdinalIgnoreCase) ||
+                leaf.StartsWith(
+                    "ru-",
+                    StringComparison.OrdinalIgnoreCase) ||
+                leaf.StartsWith(
+                    "ru_",
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool TryGetNativeOptionsLocale(
+            out bool russian,
+            out string generalLabel)
+        {
+            russian = false;
+            generalLabel = "unavailable";
+
+            try
+            {
+                Transform button =
+                    FindNativeGeneralButton();
+
+                if (button == null)
+                    return false;
+
+                Component[] components =
+                    button.GetComponentsInChildren<Component>(true);
+
+                for (int i = 0; i < components.Length; i++)
+                {
+                    Component component = components[i];
+
+                    if (component == null)
+                        continue;
+
+                    Type type = component.GetType();
+                    string fullName = type.FullName ?? "";
+
+                    if (!fullName.StartsWith(
+                            "TMPro.",
+                            StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    PropertyInfo property =
+                        type.GetProperty(
+                            "text",
+                            BindingFlags.Instance |
+                            BindingFlags.Public);
+
+                    if (property == null)
+                        continue;
+
+                    string text =
+                        property.GetValue(component, null)
+                        as string;
+
+                    if (String.IsNullOrEmpty(text))
+                        continue;
+
+                    string trimmed = text.Trim();
+
+                    if (
+                        trimmed.IndexOf(
+                            "ОБЩИЕ",
+                            StringComparison.OrdinalIgnoreCase) >= 0
+                    )
+                    {
+                        russian = true;
+                        generalLabel = trimmed;
+                        return true;
+                    }
+
+                    if (
+                        trimmed.IndexOf(
+                            "GENERAL",
+                            StringComparison.OrdinalIgnoreCase) >= 0
+                    )
+                    {
+                        russian = false;
+                        generalLabel = trimmed;
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        private static Transform FindNativeGeneralButton()
+        {
+            if (_generalButtonTransform != null)
+                return _generalButtonTransform;
+
+            MonoBehaviour[] behaviours =
+                Resources.FindObjectsOfTypeAll<MonoBehaviour>();
+
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                MonoBehaviour behaviour = behaviours[i];
+
+                if (
+                    behaviour == null ||
+                    !behaviour.gameObject.scene.IsValid() ||
+                    behaviour.GetType().FullName !=
+                        "Beam.UI.OptionsMenuPresenter"
+                )
+                {
+                    continue;
+                }
+
+                _generalButtonTransform =
+                    FindDescendant(
+                        behaviour.transform,
+                        "Button - General");
+
+                if (_generalButtonTransform != null)
+                    return _generalButtonTransform;
+            }
+
+            return null;
+        }
+
+        private static Transform FindDescendant(
+            Transform root,
+            string name)
+        {
+            if (root == null)
+                return null;
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                Transform child = root.GetChild(i);
+
+                if (child.name == name)
+                    return child;
+
+                Transform nested =
+                    FindDescendant(child, name);
+
+                if (nested != null)
+                    return nested;
+            }
+
+            return null;
+        }
+
+        private static void LogProbe(
+            float now,
+            string handlerType,
+            string beamLanguage,
+            string currentLanguage,
+            string assetPath,
+            string nativeGeneral,
+            string locale,
+            string source,
+            string error)
+        {
+            BetterMeatPlugin plugin =
+                BetterMeatPlugin.Instance;
+
+            if (plugin == null)
+                return;
+
+            string message =
+                "Runtime locale probe [" +
+                (_firstProbe ? "first HUD use" : "state changed") +
+                ", t=" +
+                now.ToString("F3", CultureInfo.InvariantCulture) +
+                "s]: handler=" + handlerType +
+                "; GetCurrentLanguage=" + beamLanguage +
+                "; currentLanguage=" + currentLanguage +
+                "; _currentAssetPath=" + assetPath +
+                "; native GENERAL=" + nativeGeneral +
+                "; locale=" + locale +
+                "; source=" + source;
+
+            if (!String.IsNullOrEmpty(error))
+                message += "; error=" + error;
+
+            plugin.InfoLog(message);
+        }
+
+        internal static string Select(
+            string russian,
+            string english)
+        {
+            return IsRussian()
+                ? russian
+                : english;
+        }
+
+        internal static string CampfireTitle
+        {
+            get { return Select("КОСТЁР", "CAMPFIRE"); }
+        }
+
+        internal static string SmokerTitle
+        {
+            get { return Select("КОПТИЛЬНЯ", "SMOKER"); }
+        }
+
+        internal static string AllCooked
+        {
+            get { return Select("Все готовы", "All cooked"); }
+        }
+
+        internal static string AllCookedIn
+        {
+            get { return Select("Все готовы через ", "All cooked in "); }
+        }
+
+        internal static string AllSmoked
+        {
+            get { return Select("Все копчёные", "All smoked"); }
+        }
+
+        internal static string AllSmokedIn
+        {
+            get { return Select("Все копчёные через ", "All smoked in "); }
+        }
+
+        internal static string Cooked
+        {
+            get { return Select("Готово", "Cooked"); }
+        }
+
+        internal static string CookedIn
+        {
+            get { return Select("Готово через ", "Cooked in "); }
+        }
+
+        internal static string CookingStopped
+        {
+            get
+            {
+                return Select(
+                    "Готовка остановлена — ",
+                    "Cooking stopped — ");
+            }
+        }
+
+        internal static string Smoked
+        {
+            get { return Select("Копчёное", "Smoked"); }
+        }
+
+        internal static string SmokedIn
+        {
+            get { return Select("Копчёное через ", "Smoked in "); }
+        }
+
+        internal static string SmokingStopped
+        {
+            get
+            {
+                return Select(
+                    "Копчение остановлено — ",
+                    "Smoking stopped — ");
+            }
+        }
+
+        internal static string Meat
+        {
+            get { return Select("Мясо", "Meat"); }
+        }
+
+        internal static string SmallMeat
+        {
+            get { return Select("Малое мясо", "Small Meat"); }
+        }
+
+        internal static string MediumMeat
+        {
+            get { return Select("Среднее мясо", "Medium Meat"); }
+        }
+
+        internal static string LargeMeat
+        {
+            get { return Select("Большое мясо", "Large Meat"); }
+        }
+
+        internal static string GetPiecesLabel(int count)
+        {
+            string number =
+                count.ToString(CultureInfo.InvariantCulture);
+
+            if (!IsRussian())
+            {
+                return number +
+                    (count == 1
+                        ? " piece of meat"
+                        : " pieces of meat");
+            }
+
+            int lastTwo = count % 100;
+            int last = count % 10;
+            string word;
+
+            if (lastTwo >= 11 && lastTwo <= 14)
+                word = "кусков";
+            else if (last == 1)
+                word = "кусок";
+            else if (last >= 2 && last <= 4)
+                word = "куска";
+            else
+                word = "кусков";
+
+            return number + " " + word + " мяса";
+        }
+
+        internal static string GetSpoiledName(
+            string localizedName)
+        {
+            if (IsRussian())
+            {
+                return "Тухлое " +
+                    localizedName.ToLowerInvariant();
+            }
+
+            return "Spoiled " + localizedName;
+        }
+    }
+
     internal sealed class CookingView
     {
-        internal string Name = "Мясо";
+        internal string Name;
 
         internal bool Cooked;
         internal bool CookingActive;

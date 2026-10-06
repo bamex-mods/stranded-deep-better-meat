@@ -1,4 +1,4 @@
-# Better Meat v0.3.2 — RU/EN Mod Settings
+# Better Meat v0.3.3 — RU/EN runtime HUD and Mod Settings
 
 База: стабильный Better Meat v0.2.9.
 
@@ -93,6 +93,16 @@ Better Meat остаётся владельцем `ConfigEntry`.
 10. После restart значения сохраняются через BepInEx config.
 11. Better Meat продолжает работать без host-мода настроек.
 
+## v0.3.3
+
+- Добавлена русско-английская локализация собственного runtime HUD Better Meat:
+  названия костра/коптильни, количество мяса, статусы приготовления и копчения.
+- Добавлена русско-английская локализация названий мяса, формируемых самим Better Meat.
+- Язык определяется через штатный язык Stranded Deep; Russian использует русские строки,
+  остальные языки используют английский fallback.
+- Runtime-локализация не зависит от наличия StrandedDeepModSettings.
+- Stacking, cooking/smoking calculations, eating protection, inventory,
+  Mod Settings и split-screen HUD ownership не менялись.
 
 ## v0.3.2
 
